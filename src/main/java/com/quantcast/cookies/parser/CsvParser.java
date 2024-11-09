@@ -8,7 +8,8 @@ import java.util.Map;
 public class CsvParser {
 
     private final String delimiter = ",";
-    public List<Map<String, String>> getValues(String csvData) {
+
+    public List<Map<String, String>> getValues(String csvData) throws IllegalArgumentException {
         String[] csvLines = csvData.split("\n");
         if (csvLines.length < 1) {
             throw new IllegalArgumentException("Empty csv data");
