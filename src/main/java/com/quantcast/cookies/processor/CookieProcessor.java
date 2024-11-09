@@ -8,7 +8,10 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
@@ -27,7 +30,7 @@ public class CookieProcessor {
     }
 
 
-    public void process(String filePath, LocalDate counterDate) throws IOException, IllegalArgumentException {
+    public void process(String filePath, OutputStream outputStream, LocalDate counterDate) throws IOException, IllegalArgumentException {
         logger.info("Reading file at {}", filePath);
         String csvData = getFileContent(filePath);
         CookieCounter counter = new CookieCounter(counterDate);
@@ -39,16 +42,18 @@ public class CookieProcessor {
         }
 
         logger.info("Writing output");
-        writeOutput(counter.getMostActiveCookies());
+        writeOutput(outputStream, counter.getMostActiveCookies());
     }
 
     private static String getFileContent(String filePath) throws IOException{
         return new String(Files.readAllBytes(Paths.get(filePath)));
     }
 
-    private static void writeOutput(List<String> output) {
-        for (String outputLine: output) {
-            System.out.println(outputLine);
+    private static void writeOutput(OutputStream outputStream, List<String> output) throws IOException {
+        try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outputStream))){
+            for (String outputLine: output) {
+                writer.write(outputLine + "\n");
+            }
         }
     }
 }

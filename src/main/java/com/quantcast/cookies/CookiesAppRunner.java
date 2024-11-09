@@ -33,9 +33,9 @@ public class CookiesAppRunner implements ApplicationRunner {
         logger.info("Running application for date {} on log file {}", countDate, filePath);
 
         try {
-            processor.process(filePath, countDate);
+            processor.process(filePath, System.out, countDate);
         } catch (IOException e) {
-            logger.error("A problem occurred with file input.", e);
+            logger.error("A problem occurred with file input or output.", e);
             throw new RuntimeException(e);
         } catch (IllegalArgumentException e) {
             logger.error("Invalid data to be parsed", e);
