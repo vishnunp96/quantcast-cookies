@@ -15,9 +15,11 @@ public class CookieLogCsvParserTest {
 
     @Test
     public void whenGoodCsvIsPassedThenListOfCookiesIsReturned() {
-        String csvData = "ids,cookie,timestamp\n" +
-                "id1,cookie1,2018-12-09T02:45:01+00:00\n" +
-                "id2,cookie1,2019-12-09T02:45:01+00:00\n";
+        String csvData = """
+                ids,cookie,timestamp
+                id1,cookie1,2018-12-09T02:45:01+00:00
+                id2,cookie1,2019-12-09T02:45:01+00:00
+                """;
         LocalDateTime expectedDateTime = LocalDateTime.parse("2018-12-09T02:45:01");
 
         List<CookieLog> logs = cookieLogCsvParser.getCookieLogs(csvData);
@@ -30,10 +32,11 @@ public class CookieLogCsvParserTest {
 
     @Test
     public void whenBadCsvIsPassedThenErrorIsReturned() {
-        String csvData = "ids,cookie,ts\n" +
-                "id1,cookie1,2018-12-09T02:45:01+00:00\n" +
-                "id2,cookie1,2019-12-09T02:45:01+00:00\n";
-        LocalDateTime expectedDateTime = LocalDateTime.parse("2018-12-09T02:45:01");
+        String csvData = """
+                ids,cookie,ts
+                id1,cookie1,2018-12-09T02:45:01+00:00
+                id2,cookie1,2019-12-09T02:45:01+00:00
+                """;
 
         try {
             cookieLogCsvParser.getCookieLogs(csvData);

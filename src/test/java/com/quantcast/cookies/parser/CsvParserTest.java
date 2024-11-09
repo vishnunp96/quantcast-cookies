@@ -1,6 +1,5 @@
 package com.quantcast.cookies.parser;
 
-import com.quantcast.cookies.parser.CsvParser;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
