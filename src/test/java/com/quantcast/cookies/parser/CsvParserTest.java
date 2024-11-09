@@ -1,4 +1,4 @@
-package com.quantcast.cookies;
+package com.quantcast.cookies.parser;
 
 import com.quantcast.cookies.parser.CsvParser;
 import org.junit.jupiter.api.Assertions;
@@ -12,14 +12,14 @@ public class CsvParserTest {
     CsvParser csvParser = new CsvParser();
     @Test
     public void whenGoodCsvIsPassedListOfMapsIsReturned() {
-        String csvData = "cookie,timestamp\nid1,2012\nid2,2024";
+        String csvData = "ids,timestamp\nid1,2012\nid2,2024";
 
         List<Map<String, String>> result = csvParser.getValues(csvData);
 
         Assertions.assertEquals(2, result.size());
-        Assertions.assertTrue(result.getFirst().containsKey("cookie"));
+        Assertions.assertTrue(result.getFirst().containsKey("ids"));
         Assertions.assertTrue(result.getFirst().containsKey("timestamp"));
-        Assertions.assertEquals("id2", result.get(1).get("cookie"));
+        Assertions.assertEquals("id2", result.get(1).get("ids"));
         Assertions.assertEquals("2024", result.get(1).get("timestamp"));
     }
 
