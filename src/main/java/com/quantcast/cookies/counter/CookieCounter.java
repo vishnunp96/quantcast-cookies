@@ -10,16 +10,16 @@ import java.util.Map;
 
 public class CookieCounter {
 
-    private final LocalDate logDate;
+    private final LocalDate counterDate;
     protected final Map<String, Integer> counts;
 
-    public CookieCounter(LocalDate logDate) {
-        this.logDate = logDate;
+    public CookieCounter(LocalDate counterDate) {
+        this.counterDate = counterDate;
         this.counts = new HashMap<>();
     }
 
     public void process(CookieLog log) {
-        if (logDate.isEqual(log.dateTime().toLocalDate())) {
+        if (counterDate.isEqual(log.dateTime().toLocalDate())) {
             counts.put(log.id(), counts.getOrDefault(log.id(), 0) + 1);
         }
     }

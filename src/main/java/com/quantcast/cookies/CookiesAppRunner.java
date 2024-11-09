@@ -1,5 +1,6 @@
 package com.quantcast.cookies;
 
+import com.quantcast.cookies.processor.CookieProcessor;
 import org.apache.commons.cli.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -14,12 +15,16 @@ import java.time.format.DateTimeParseException;
 public class CookiesAppRunner implements ApplicationRunner {
 
     private static final Logger logger = LogManager.getLogger(CookiesAppRunner.class);
+
+    private final CookieProcessor processor = new CookieProcessor();
     @Override
     public void run(ApplicationArguments args) throws Exception {
         CommandLine cmdArgs = getArguments(args.getSourceArgs());
-        LocalDate logDate = LocalDate.parse(cmdArgs.getOptionValue("d"));
+        LocalDate countDate = LocalDate.parse(cmdArgs.getOptionValue("d"));
         String filePath = cmdArgs.getOptionValue("f");
-        logger.info("Running application for date {} on log file {}", logDate, filePath);
+        logger.info("Running application for date {} on log file {}", countDate, filePath);
+
+        processor.process(filePath, countDate);
     }
 
     private CommandLine getArguments(String[] args) throws RuntimeException{

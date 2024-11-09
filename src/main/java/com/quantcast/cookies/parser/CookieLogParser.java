@@ -9,5 +9,5 @@ import java.util.List;
  * From given data, should get back a list of cookie logs.
  */
 public interface CookieLogParser {
-    List<CookieLog> getCookieLogs(String data);
+    List<CookieLog> getCookieLogs(String data) throws IllegalArgumentException;
 }

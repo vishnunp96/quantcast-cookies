@@ -31,7 +31,7 @@ public class CookieLogCsvParserTest {
     }
 
     @Test
-    public void whenBadCsvIsPassedThenErrorIsReturned() {
+    public void whenRequiredHeaderIsNotPassedThenErrorIsReturned() {
         String csvData = """
                 ids,cookie,ts
                 id1,cookie1,2018-12-09T02:45:01+00:00
@@ -40,7 +40,21 @@ public class CookieLogCsvParserTest {
 
         try {
             cookieLogCsvParser.getCookieLogs(csvData);
-            Assertions.fail("Should have failed due to lack of timestamp");
+            Assertions.fail("Should have failed due to lack of timestamp key");
+        } catch (IllegalArgumentException ignored){
+        }
+    }
+    @Test
+    public void whenTimestampFormatIsWrongThenErrorIsReturned() {
+        String csvData = """
+                ids,cookie,timestamp
+                id1,cookie1,2018-12-09T02:45:01
+                id2,cookie1,2019-12-09T02:45:01
+                """;
+
+        try {
+            cookieLogCsvParser.getCookieLogs(csvData);
+            Assertions.fail("Should have failed due to timestamp format");
         } catch (IllegalArgumentException ignored){
         }
     }
