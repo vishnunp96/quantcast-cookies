@@ -9,6 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Class to get list of cookie logs from given csv data
+ */
 public class CookieLogCsvParser implements CookieLogParser {
 
     private final CsvParser csvParser;
@@ -18,6 +21,15 @@ public class CookieLogCsvParser implements CookieLogParser {
         this.csvParser = csvParser;
         this.dateTimeFormatter = dateTimeFormatter;
     }
+
+    /**
+     * processes csvData to get a list of cookie logs
+     * for each row in parsed csv data, "cookie" and "timestamp" fields are extracted.
+     *
+     * @param csvData - full csv content
+     * @return - list of Cookie Logs
+     * @throws IllegalArgumentException - when csv data is ill formatted, or required keys are not present
+     */
     @Override
     public List<CookieLog> getCookieLogs(String csvData) throws IllegalArgumentException{
         List<Map<String, String>> csvValues = csvParser.getValues(csvData);
@@ -34,6 +46,12 @@ public class CookieLogCsvParser implements CookieLogParser {
         return cookies;
     }
 
+    /**
+     * parses date time string
+     * @param dateTimeString - takes in date time of accepted format
+     * @return - LocalDateTime object after parsing
+     * @throws IllegalArgumentException - when date time string does not match expected format
+     */
     private LocalDateTime parseDateTime(String dateTimeString) throws IllegalArgumentException {
         try {
             return LocalDateTime.parse(dateTimeString, dateTimeFormatter);

@@ -24,8 +24,19 @@ public class CookieProcessor {
         this.parser = parser;
     }
 
-
-    public void process(InputStream inputStream, OutputStream outputStream, LocalDate counterDate) throws IOException, IllegalArgumentException {
+    /**
+     * - Reads from input stream
+     * - Parses data and processes using counter based on input date
+     * - Writes to output stream
+     *
+     * @param inputStream - to read from
+     * @param outputStream - to write to
+     * @param counterDate - date for which logs have to be counted
+     * @throws IOException - when input stream has an issue
+     * @throws IllegalArgumentException - when parsing runs into an issue
+     */
+    public void process(InputStream inputStream, OutputStream outputStream, LocalDate counterDate)
+            throws IOException, IllegalArgumentException {
         logger.info("Reading from input stream");
         String csvData = getStreamContent(inputStream);
         CookieCounter counter = new CookieCounter(counterDate);
@@ -40,7 +51,14 @@ public class CookieProcessor {
         writeOutput(outputStream, counter.getMostActiveCookies());
     }
 
-    private static String getStreamContent(InputStream inputStream) throws IOException{
+    /**
+     * Handles getting full content from stream
+     * @param inputStream - stream to read from
+     * @return - stream content, lines separated by \n
+     * @throws IOException - when input stream causes an issue
+     */
+    private static String getStreamContent(InputStream inputStream)
+            throws IOException{
         StringBuilder streamContent = new StringBuilder();
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
             String line;
@@ -51,7 +69,14 @@ public class CookieProcessor {
         return streamContent.toString();
     }
 
-    private static void writeOutput(OutputStream outputStream, List<String> output) throws IOException {
+    /**
+     * Handles writing to output stream in required format.
+     * @param outputStream - stream to write output
+     * @param output - list of strings to write to output
+     * @throws IOException - when output stream causes an issue
+     */
+    private static void writeOutput(OutputStream outputStream, List<String> output)
+            throws IOException {
         try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outputStream))){
             for (String outputLine: output) {
                 writer.write(outputLine + "\n");

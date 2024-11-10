@@ -5,10 +5,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Class to read data from Csv files
+ */
 public class CsvParser {
 
     private final String delimiter = ",";
 
+    /**
+     * Parses a csv into a data structure
+     * @param csvData - entire csvData, rows separated by \n, columns separated by commas
+     * @return - list of maps, one map for each row, map keys taken from header
+     * @throws IllegalArgumentException - when csv is empty or if rows cannot be mapped.
+     */
     public List<Map<String, String>> getValues(String csvData) throws IllegalArgumentException {
         String[] csvLines = csvData.split("\n");
         if (csvLines.length < 1) {
@@ -25,6 +34,15 @@ public class CsvParser {
         return csvValues;
     }
 
+    /**
+     * returns the row of csv as a data structure, with the help of the header
+     *
+     * @param headers - csv headers
+     * @param row - row of data
+     * @return - map for row, keys taken from csv header
+     * @throws IllegalArgumentException - when number of columns do not match between
+     *  row and header.
+     */
     private Map<String, String> getMappedValuesFromRow(String[] headers, String row)
             throws IllegalArgumentException {
         String[] rowValues = row.split(delimiter);

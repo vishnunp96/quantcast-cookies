@@ -11,11 +11,22 @@ import java.time.format.DateTimeFormatter;
 
 @Configuration
 public class ApplicationConfiguration {
+
+
+    /**
+     * config - format for date time in the log file
+     * @return - suitable formatter
+     */
     @Bean
     DateTimeFormatter dateTimeFormatter() {
         return DateTimeFormatter.ISO_OFFSET_DATE_TIME;
     }
 
+    /**
+     * config - parser to use for input stream content
+     * @param dateTimeFormatter - Autowired date time format
+     * @return - parser for input csv file content
+     */
     @Bean
     @Autowired
     CookieLogParser cookieLogParser(DateTimeFormatter dateTimeFormatter) {
