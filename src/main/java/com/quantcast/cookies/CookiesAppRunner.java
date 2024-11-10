@@ -9,7 +9,9 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 
@@ -32,8 +34,8 @@ public class CookiesAppRunner implements ApplicationRunner {
         String filePath = cmdArgs.getOptionValue("f");
         logger.info("Running application for date {} on log file {}", countDate, filePath);
 
-        try {
-            processor.process(filePath, System.out, countDate);
+        try(InputStream inputStream = new FileInputStream(filePath)) {
+            processor.process(inputStream, System.out, countDate);
         } catch (IOException e) {
             logger.error("A problem occurred with file input or output.", e);
             throw new RuntimeException(e);

@@ -8,12 +8,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.io.*;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -30,12 +25,12 @@ public class CookieProcessor {
     }
 
 
-    public void process(String filePath, OutputStream outputStream, LocalDate counterDate) throws IOException, IllegalArgumentException {
-        logger.info("Reading file at {}", filePath);
-        String csvData = getFileContent(filePath);
+    public void process(InputStream inputStream, OutputStream outputStream, LocalDate counterDate) throws IOException, IllegalArgumentException {
+        logger.info("Reading from input stream");
+        String csvData = getStreamContent(inputStream);
         CookieCounter counter = new CookieCounter(counterDate);
 
-        logger.info("Parsing data from file {}", filePath);
+        logger.info("Parsing data from stream");
         List<CookieLog> cookieLogs = parser.getCookieLogs(csvData);
         for (CookieLog log: cookieLogs) {
             counter.process(log);
@@ -45,8 +40,15 @@ public class CookieProcessor {
         writeOutput(outputStream, counter.getMostActiveCookies());
     }
 
-    private static String getFileContent(String filePath) throws IOException{
-        return new String(Files.readAllBytes(Paths.get(filePath)));
+    private static String getStreamContent(InputStream inputStream) throws IOException{
+        StringBuilder streamContent = new StringBuilder();
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                streamContent.append(line).append("\n");
+            }
+        }
+        return streamContent.toString();
     }
 
     private static void writeOutput(OutputStream outputStream, List<String> output) throws IOException {
