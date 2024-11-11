@@ -6,4 +6,5 @@ Args:
 
 
 > mvn clean package
+> 
 > java -jar target/cookies-1.0.0-SNAPSHOT.jar -f src/test/resources/cookie_log_test.csv -d 2018-12-09
