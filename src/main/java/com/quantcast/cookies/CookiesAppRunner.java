@@ -1,6 +1,7 @@
 package com.quantcast.cookies;
 
 import com.quantcast.cookies.processor.CookieProcessor;
+import com.quantcast.cookies.reader.StreamReader;
 import org.apache.commons.cli.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -9,7 +10,6 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDate;
@@ -33,8 +33,16 @@ public class CookiesAppRunner implements ApplicationRunner {
     @Autowired
     private final CookieProcessor processor;
 
-    public CookiesAppRunner(CookieProcessor processor) {
+    @Autowired
+    private final StreamReader fileReader;
+
+    @Autowired
+    private final StreamReader directoryReader;
+
+    public CookiesAppRunner(CookieProcessor processor, StreamReader fileReader, StreamReader directoryReader) {
         this.processor = processor;
+        this.fileReader = fileReader;
+        this.directoryReader = directoryReader;
     }
 
 
@@ -51,9 +59,19 @@ public class CookiesAppRunner implements ApplicationRunner {
         CommandLine cmdArgs = getArguments(args.getSourceArgs());
         LocalDate countDate = LocalDate.parse(cmdArgs.getOptionValue("d"));
         String filePath = cmdArgs.getOptionValue("f");
+
+        if (cmdArgs.hasOption("r")){
+            dispatchToProcess(directoryReader, filePath, countDate);
+        } else {
+            dispatchToProcess(fileReader, filePath, countDate);
+        }
+
         logger.info("Running application for date {} on log file {}", countDate, filePath);
 
-        try(InputStream inputStream = new FileInputStream(filePath)) {
+    }
+
+    private void dispatchToProcess(StreamReader reader, String path, LocalDate countDate) throws IOException, IllegalArgumentException {
+        try(InputStream inputStream = reader.getInputStream(path) ) {
             processor.process(inputStream, System.out, countDate);
         } catch (IOException e) {
             logger.error("A problem occurred with file input or output.", e);
@@ -84,6 +102,10 @@ public class CookiesAppRunner implements ApplicationRunner {
         Option file = new Option("f", "file", true, "log file path");
         file.setRequired(true);
         options.addOption(file);
+
+        Option dir = new Option("r", "recursive", false, "directory");
+        dir.setRequired(false);
+        options.addOption(dir);
 
         CommandLineParser parser = new DefaultParser();
         HelpFormatter helpFormatter = new HelpFormatter();
